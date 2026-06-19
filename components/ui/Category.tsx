@@ -30,7 +30,7 @@ const Category = () => {
         <section className="bg-white">
             <div className="mx-auto flex flex-col max-w-6xl px-6 py-16 md:py-20 gap-12">
                 
-                <div className="max-w-4xl">
+                <div>
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-primary-dark leading-tight">
                         From compelling brand stories to heartfelt essays, I write to connect, inspire, and bring ideas to life with clarity and emotion.
                     </h1>
