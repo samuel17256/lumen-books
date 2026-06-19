@@ -8,7 +8,7 @@ import Button from "./button/Button";
 
 const links = [
     { name: "Home", href: "/" },
-    { name: "Collections", href: "/collections" },
+    { name: "Books", href: "/books" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
     { name: "Dashboard", href: "/dashboard" },
@@ -54,9 +54,6 @@ const Nav = () => {
                     </ul>
 
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" className="rounded-full hidden md:flex">
-                            <Search size={19} strokeWidth={1.75} />
-                        </Button>
                         <Link
                             href="/login"
                             className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-secondary hover:bg-primary-dark transition-colors"
@@ -101,14 +98,6 @@ const Nav = () => {
                             </li>
                         )
                     })}
-                    <li className="flex items-center gap-5 pt-2 border-t border-primary/10">
-                        <button
-                            aria-label="Search"
-                            className="text-primary-dark/70 hover:text-primary-dark transition-colors"
-                        >
-                            <Search size={19} strokeWidth={1.75} />
-                        </button>
-                    </li>
                     <li>
                         <Link
                             href="/login"

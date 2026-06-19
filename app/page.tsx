@@ -1,9 +1,11 @@
-import Image from "next/image";
+import Hero from "@/components/ui/Hero";
+import Stats from "@/components/ui/Stats";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-secondary font-sans">
-     
+    <div className="bg-secondary">
+     <Hero />
+     <Stats />
     </div>
   );
 }

@@ -9,4 +9,6 @@
   --color-secondary-dark: #ece1d6;
 
   --color-text: #2b2024;
+
+  --font-display: var(--font-display);
 }
