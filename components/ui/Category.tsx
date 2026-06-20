@@ -1,7 +1,6 @@
 import { BookOpen, Sparkles, Terminal, FileText } from "lucide-react";
 import Image from "next/image";
 
-// 1. Defined structured, rich content for the categories
 const CATEGORIES = [
     {
         title: "Creative Writing",

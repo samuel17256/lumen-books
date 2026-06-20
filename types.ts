@@ -36,3 +36,8 @@ export type DashboardStats = {
   totalBooks: number
   lastUpdated: string
 }
+export type SearchParams = {
+  category?: string
+  sort?: string
+  q?: string
+}

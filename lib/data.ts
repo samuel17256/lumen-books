@@ -16,7 +16,7 @@ let books: Book[] = [
     price: 18.99,
     description:
       "A slow, tender novel about a woman who returns to her late grandmother's orchard and, in restoring it, begins to restore herself. A book about grief, memory, and the patience of growing things.",
-    coverImageUrl: "/covers/quiet-orchard.jpg",
+    coverImageUrl: "/images/orchard.webp",
     category: "Fiction",
     createdAt: "2026-01-12T10:00:00.000Z",
     ratingsCount: 184,
@@ -32,7 +32,7 @@ let books: Book[] = [
     price: 15.5,
     description:
       "An epistolary novel told through unsent letters between two sisters separated by an ocean and a falling-out neither can quite name.",
-    coverImageUrl: "/covers/letters-i-never-sent.jpg",
+    coverImageUrl: "/images/letters.webp",
     category: "Romance",
     createdAt: "2026-02-03T10:00:00.000Z",
     ratingsCount: 312,
@@ -48,7 +48,7 @@ let books: Book[] = [
     price: 12.0,
     description:
       "A debut poetry collection about insomnia, cities at 3am, and the strange clarity that comes with being the only one awake.",
-    coverImageUrl: "/covers/small-hours.jpg",
+    coverImageUrl: "/images/hours.webp",
     category: "Poetry",
     createdAt: "2025-11-20T10:00:00.000Z",
     ratingsCount: 97,
@@ -64,7 +64,7 @@ let books: Book[] = [
     price: 21.0,
     description:
       "A memoir structured as an atlas — each chapter a place the author lived, mapped against the people she lost along the way.",
-    coverImageUrl: "/covers/cartography-of-loss.jpg",
+    coverImageUrl: "/images/cartography_of_loss_04-2.webp",
     category: "Nonfiction",
     createdAt: "2026-03-08T10:00:00.000Z",
     ratingsCount: 56,
@@ -80,7 +80,7 @@ let books: Book[] = [
     price: 19.99,
     description:
       "A multigenerational saga following a family of river-boat traders, and the secrets the water carries downstream with it.",
-    coverImageUrl: "/covers/what-the-river-keeps.jpg",
+    coverImageUrl: "/images/rivers.webp",
     category: "Fiction",
     createdAt: "2025-09-14T10:00:00.000Z",
     ratingsCount: 421,
@@ -96,7 +96,7 @@ let books: Book[] = [
     price: 14.25,
     description:
       "A cozy, slow-burn romance set above a flower shop, about two people who keep almost-meeting for a decade before finally getting it right.",
-    coverImageUrl: "/covers/cafe-bloom.jpg",
+    coverImageUrl: "/images/second-chances.webp",
     category: "Romance",
     createdAt: "2026-04-01T10:00:00.000Z",
     ratingsCount: 203,
@@ -104,6 +104,22 @@ let books: Book[] = [
     stock: 25,
     sellerId: SELLER_ID,
   },
+  {
+  id: "7",
+  slug: "the-darwin-affair",
+  title: "The Darwin Affair",
+  author: "Tim Mason",
+  price: 16.99,
+  description:
+    "A gripping historical thriller set in Victorian London, where a failed assassination attempt on Queen Victoria unravels into a dark conspiracy tangled with the controversy surrounding Charles Darwin's theory of evolution.",
+  coverImageUrl: "/images/darwin.webp",
+  category: "Fiction",
+  createdAt: "2026-06-01T10:00:00.000Z",
+  ratingsCount: 0,
+  ratingsAverage: 0,
+  stock: 15,
+  sellerId: SELLER_ID,
+},
 ]
 
 let orders: Order[] = [
@@ -148,8 +164,6 @@ export async function searchBooks(query: string): Promise<Book[]> {
 
 export async function getFeaturedBooks(): Promise<Book[]> {
   await delay()
-  // Hand-picked for the homepage — for now, newest first. Swap for a
-  // `featured: boolean` field on Book once editors can curate this.
   return [...books]
     .sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -159,10 +173,30 @@ export async function getFeaturedBooks(): Promise<Book[]> {
 
 export async function getBestsellers(): Promise<Book[]> {
   await delay()
-  // Driven by actual demand, not curation — ranked by ratingsCount as a
-  // stand-in for sales volume. Swap for a real order-count aggregate
-  // once `orders` is the source of truth.
   return [...books].sort((a, b) => b.ratingsCount - a.ratingsCount)
+}
+
+export async function getStoreStats() {
+  await delay()
+  const totalBooks = books.length
+  const totalCategories = new Set(books.map((b) => b.category)).size
+  const totalReaders = books.reduce((sum, b) => sum + b.ratingsCount, 0)
+ 
+  return { totalBooks, totalCategories, totalReaders }
+}
+
+export async function getRecommendedBooks(
+  bookId: string,
+  limit = 4
+): Promise<Book[]> {
+  await delay(1200)
+  const current = books.find((b) => b.id === bookId)
+  const pool = books.filter((b) => b.id !== bookId)
+  const sameCategory = current
+    ? pool.filter((b) => b.category === current.category)
+    : []
+  const rest = pool.filter((b) => !sameCategory.includes(b))
+  return [...sameCategory, ...rest].slice(0, limit)
 }
 
 // ---------- seller dashboard ----------

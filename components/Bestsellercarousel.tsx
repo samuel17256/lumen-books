@@ -18,7 +18,7 @@ const BestsellerCarousel = ({ books }: { books: Book[] }) => {
             <Link
               key={`${book.id}-${i}`}
               href={`/books/${book.slug}`}
-              className="w-40 shrink-0"
+              className="w-40 shrink-0 bg-white"
             >
               <div className="relative aspect-2/3 w-full overflow-hidden rounded-lg bg-primary/10 shadow-sm">
                 <Image

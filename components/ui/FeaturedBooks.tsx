@@ -31,7 +31,7 @@ const FeaturedBooks = async () => {
             href={`/books/${book.slug}`}
             className="group block bg-white rounded-lg"
           >
-            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-primary/10 shadow-sm">
+            <div className="relative aspect-2/3  w-full overflow-hidden rounded-lg bg-primary/10 shadow-sm">
               <Image
                 src={book.coverImageUrl}
                 alt={`Cover of ${book.title}`}
