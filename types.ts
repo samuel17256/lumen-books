@@ -14,6 +14,13 @@ export type Book = {
   sellerId: string
 }
 
+export type Testimonial = {
+  name: string
+  role: string
+  avatarUrl: string
+  quote: string
+}
+
 export type Order = {
   id: string
   bookId: string

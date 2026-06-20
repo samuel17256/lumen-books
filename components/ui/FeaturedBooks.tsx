@@ -2,12 +2,11 @@ import Image from "next/image"
 import Link from "next/link"
 import { getBooks } from "@/lib/data"
 
-// Server Component: fetches directly on the server (no useEffect/client
-// fetch needed since this never changes based on user interaction).
-const Works = async () => {
+
+const FeaturedBooks = async () => {
   const allBooks = await getBooks()
 
-  // "Recent work" -> the 4 most recently added books, newest first.
+
   const books = [...allBooks]
     .sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -18,14 +17,14 @@ const Works = async () => {
     <section className="mx-auto max-w-6xl px-6 py-20">
       <div className="mb-10 max-w-xl">
         <p className="text-xs uppercase tracking-wide text-primary font-medium">
-          Our Catalog
+          Our Featured Books
         </p>
         <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-dark mt-2">
-          A Glimpse into my Recent Work
+          Stories Worth Falling Into
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-x-6 gap-y-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-10">
         {books.map((book) => (
           <Link
             key={book.id}
@@ -43,18 +42,18 @@ const Works = async () => {
             </div>
 
             <div className="px-2 py-2">
-                <h3 className="mt-3 font-display font-semibold text-sm text-primary-dark leading-snug line-clamp-1">
-              {book.title}
-            </h3>
-            <p className="text-xs text-primary-dark/60">{book.author}</p>
-            <div className="mt-1 flex items-center justify-between">
-              <span className="text-sm font-medium text-primary">
-                ${book.price.toFixed(2)}
-              </span>
-              <span className="text-[11px] text-primary-dark/40">
-                {book.ratingsAverage.toFixed(1)}★
-              </span>
-            </div>
+              <h3 className="mt-3 font-display font-semibold text-sm text-primary-dark leading-snug line-clamp-1">
+                {book.title}
+              </h3>
+              <p className="text-xs text-primary-dark/60">{book.author}</p>
+              <div className="mt-1 flex items-center justify-between">
+                <span className="text-sm font-medium text-primary">
+                  ${book.price.toFixed(2)}
+                </span>
+                <span className="text-[11px] text-primary-dark/40">
+                  {book.ratingsAverage.toFixed(1)}★
+                </span>
+              </div>
             </div>
           </Link>
         ))}
@@ -69,4 +68,4 @@ const Works = async () => {
   )
 }
 
-export default Works;
+export default FeaturedBooks;

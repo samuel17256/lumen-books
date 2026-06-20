@@ -1,13 +1,5 @@
 import { Book, Order, DashboardStats } from "../types"
 
-/**
- * Stand-in "database". Everything here is async and adds artificial
- * latency, so every call site in the app has to make a real decision
- * about *how* and *when* to fetch it (build time, request time, on
- * the server, on the client, etc.) — same as it would against a real
- * API or DB. Swap this module for Prisma/Drizzle/a fetch() call to a
- * real backend without touching any call site.
- */
 
 function delay(ms = 500) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -24,7 +16,7 @@ let books: Book[] = [
     price: 18.99,
     description:
       "A slow, tender novel about a woman who returns to her late grandmother's orchard and, in restoring it, begins to restore herself. A book about grief, memory, and the patience of growing things.",
-    coverImageUrl: "/images/photo-1519733833087-3b1ceb8d56c5.avif",
+    coverImageUrl: "/covers/quiet-orchard.jpg",
     category: "Fiction",
     createdAt: "2026-01-12T10:00:00.000Z",
     ratingsCount: 184,
@@ -40,7 +32,7 @@ let books: Book[] = [
     price: 15.5,
     description:
       "An epistolary novel told through unsent letters between two sisters separated by an ocean and a falling-out neither can quite name.",
-    coverImageUrl: "/images/photo-1599839575784-3f3bf15cb473.avif",
+    coverImageUrl: "/covers/letters-i-never-sent.jpg",
     category: "Romance",
     createdAt: "2026-02-03T10:00:00.000Z",
     ratingsCount: 312,
@@ -72,7 +64,7 @@ let books: Book[] = [
     price: 21.0,
     description:
       "A memoir structured as an atlas — each chapter a place the author lived, mapped against the people she lost along the way.",
-    coverImageUrl: "/images/file-1715714113747-b8b0561c490eimage.avif",
+    coverImageUrl: "/covers/cartography-of-loss.jpg",
     category: "Nonfiction",
     createdAt: "2026-03-08T10:00:00.000Z",
     ratingsCount: 56,
@@ -104,7 +96,7 @@ let books: Book[] = [
     price: 14.25,
     description:
       "A cozy, slow-burn romance set above a flower shop, about two people who keep almost-meeting for a decade before finally getting it right.",
-    coverImageUrl: "/images/photo-1485462537746-965f33f7f6a7.avif",
+    coverImageUrl: "/covers/cafe-bloom.jpg",
     category: "Romance",
     createdAt: "2026-04-01T10:00:00.000Z",
     ratingsCount: 203,
@@ -156,9 +148,21 @@ export async function searchBooks(query: string): Promise<Book[]> {
 
 export async function getFeaturedBooks(): Promise<Book[]> {
   await delay()
+  // Hand-picked for the homepage — for now, newest first. Swap for a
+  // `featured: boolean` field on Book once editors can curate this.
   return [...books]
-    .sort((a, b) => b.ratingsCount - a.ratingsCount)
+    .sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
     .slice(0, 4)
+}
+
+export async function getBestsellers(): Promise<Book[]> {
+  await delay()
+  // Driven by actual demand, not curation — ranked by ratingsCount as a
+  // stand-in for sales volume. Swap for a real order-count aggregate
+  // once `orders` is the source of truth.
+  return [...books].sort((a, b) => b.ratingsCount - a.ratingsCount)
 }
 
 // ---------- seller dashboard ----------
