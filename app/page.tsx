@@ -5,6 +5,8 @@ import Testimonials from "@/components/ui/Testimonials";
 import Bestsellers from "@/components/ui/Bestsellers ";
 import FeaturedBooks from "@/components/ui/FeaturedBooks";
 
+export const revalidate = 3600;
+
 export default function Home() {
   return (
     <div className="bg-secondary">

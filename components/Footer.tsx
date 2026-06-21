@@ -1,5 +1,10 @@
+"use client"
+
+
 import Link from "next/link"
 import { Mail } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
 
 const shopLinks = [
   { name: "All Books", href: "/shop" },
@@ -23,6 +28,13 @@ const supportLinks = [
 ]
 
 const Footer = () => {
+
+    const pathname = usePathname()
+    const [open, setOpen] = useState(false)
+
+    if (pathname.startsWith("/dashboard")) return null
+    
+
   return (
     <footer className="bg-primary text-secondary">
       <div className="mx-auto max-w-6xl px-6 py-16">

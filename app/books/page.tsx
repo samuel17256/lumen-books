@@ -3,7 +3,6 @@ import Link from "next/link"
 import { getBooks,searchBooks } from "@/lib/data"
 import {SearchParams} from "@/types"
 
-export const dynamic = "force-dynamic"
 
 const BooksPage = async ({
   searchParams,

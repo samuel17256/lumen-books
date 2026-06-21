@@ -3,21 +3,21 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Menu, X, Search, User } from "lucide-react"
-import Button from "./button/Button";
+import { Menu, X, User } from "lucide-react"
 
 const links = [
     { name: "Home", href: "/" },
     { name: "Books", href: "/books" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
-    { name: "Dashboard", href: "/dashboard" },
 ]
 
 const Nav = () => {
     const pathname = usePathname()
     const [open, setOpen] = useState(false)
 
+    if (pathname.startsWith("/dashboard")) return null
+    
     return (
         <header className="sticky top-0 z-50 bg-secondary/90 backdrop-blur-sm border-b border-primary/10">
             <div className="mx-auto max-w-6xl px-6">
