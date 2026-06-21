@@ -238,6 +238,19 @@ export async function createBook(
   return book
 }
 
+export async function getRecentOrders(sellerId: string, limit = 5) {
+  await delay()
+  const sellerBookIds = new Set(
+    books.filter((b) => b.sellerId === sellerId).map((b) => b.id)
+  )
+  return [...orders]
+    .filter((o) => sellerBookIds.has(o.bookId))
+    .sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, limit)
+}
+
 export async function deleteBook(id: string): Promise<void> {
   await delay(300)
   books = books.filter((b) => b.id !== id)

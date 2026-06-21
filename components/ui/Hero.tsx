@@ -1,10 +1,42 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Search } from "lucide-react"
-
+import { useRouter } from "next/navigation"
+import { useState, useDeferredValue, useRef } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { Book } from "@/types"
 
 const Hero = () => {
+  const router = useRouter()
+  const [query, setQuery] = useState("")
+  const [showResults, setShowResults] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const deferredQuery = useDeferredValue(query.trim())
+
+  const { data, isFetching } = useQuery({
+    queryKey: ["books-search", deferredQuery],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/books?q=${encodeURIComponent(deferredQuery)}&limit=5`
+      )
+      if (!res.ok) throw new Error("Search failed")
+      return res.json() as Promise<{ books: Book[] }>
+    },
+    enabled: deferredQuery.length > 0,
+    staleTime: 30 * 1000,
+  })
+
+  const results = data?.books ?? []
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = query.trim()
+    router.push(trimmed ? `/books?q=${encodeURIComponent(trimmed)}` : "/books")
+  }
+
   return (
     <section className="relative overflow-hidden bg-secondary min-h-screen">
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -41,20 +73,84 @@ const Hero = () => {
                 <p className="font-display font-bold text-base text-primary-dark mb-2">
                   Find Your Next Favorite Book
                 </p>
-                <form className="flex items-center rounded-full bg-white shadow-sm overflow-hidden">
-                  <input
-                    type="text"
-                    placeholder="Search books, genres, or collections..."
-                    className="flex-1 bg-transparent px-5 py-3.5 text-sm text-primary-dark placeholder:text-primary-dark/40 focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    aria-label="Search"
-                    className="m-1.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-dark text-white hover:bg-primary transition-colors"
+                <div ref={containerRef} className="relative">
+                  <form
+                    onSubmit={handleSearch}
+                    className="flex items-center rounded-full bg-white shadow-sm overflow-hidden"
                   >
-                    <Search size={17} strokeWidth={2} />
-                  </button>
-                </form>
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => {
+                        setQuery(e.target.value)
+                        setShowResults(true)
+                      }}
+                      onFocus={() => setShowResults(true)}
+                      placeholder="Search books, genres, or collections..."
+                      className="flex-1 bg-transparent px-5 py-3.5 text-sm text-primary-dark placeholder:text-primary-dark/40 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      aria-label="Search"
+                      className="m-1.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-dark text-white hover:bg-primary transition-colors"
+                    >
+                      <Search size={17} strokeWidth={2} />
+                    </button>
+                  </form>
+
+                  {showResults && query.trim() && (
+                    <div className="absolute z-20 mt-2 w-full rounded-2xl bg-white shadow-lg border border-primary/10 overflow-hidden">
+                      {isFetching && (
+                        <p className="px-4 py-3 text-sm text-primary-dark/50">
+                          Searching...
+                        </p>
+                      )}
+
+                      {!isFetching && results.length === 0 && (
+                        <p className="px-4 py-3 text-sm text-primary-dark/50">
+                          No matches for &ldquo;{query}&rdquo;.
+                        </p>
+                      )}
+
+                      {!isFetching &&
+                        results.map((book) => (
+                          <Link
+                            key={book.id}
+                            href={`/books/${book.slug}`}
+                            onClick={() => setShowResults(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-secondary transition-colors"
+                          >
+                            <div className="relative h-12 w-9 shrink-0 overflow-hidden rounded bg-primary/10">
+                              <Image
+                                src={book.coverImageUrl}
+                                alt={book.title}
+                                fill
+                                sizes="36px"
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-primary-dark truncate">
+                                {book.title}
+                              </p>
+                              <p className="text-xs text-primary-dark/50">
+                                {book.author}
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+
+                      {!isFetching && results.length > 0 && (
+                        <button
+                          onClick={() => router.push(`/books?q=${encodeURIComponent(query)}`)}
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-primary hover:bg-secondary transition-colors border-t border-primary/10"
+                        >
+                          See all results for &ldquo;{query}&rdquo; →
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

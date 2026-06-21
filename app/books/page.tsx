@@ -9,6 +9,7 @@ const BooksPage = async ({
 }: {
   searchParams: Promise<SearchParams>
 }) => {
+  
   const { category, sort, q } = await searchParams
 
   const allBooks = await getBooks()
